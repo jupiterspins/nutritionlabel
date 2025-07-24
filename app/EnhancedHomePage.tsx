@@ -246,7 +246,9 @@ export default function EnhancedHomePage() {
               className="p-8 card-modern bg-gradient-to-br from-green-50 to-green-100 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
             >
               <h3 className="text-2xl font-bold text-green-900 mb-3 flex items-center gap-3">
-                <LabelIcon className="w-8 h-8 text-green-600 float-animation" style={{animationDelay: '0.5s'}} />
+                <span className="float-animation" style={{animationDelay: '0.5s'}}>
+                  <LabelIcon className="w-8 h-8 text-green-600" />
+                </span>
                 Label Maker
               </h3>
               <p className="text-green-700">Create custom nutrition labels for your recipes</p>
