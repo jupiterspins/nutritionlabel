@@ -39,6 +39,7 @@ export const viewport = {
 }
 
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function RootLayout({
   children,
@@ -50,6 +51,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gray-50 text-gray-800`}>
         {children}
         <ServiceWorkerRegistration />
+        <Analytics />
       </body>
     </html>
   )
