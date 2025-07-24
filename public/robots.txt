@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nutritionlabel.opuscaviar.com/sitemap.xml

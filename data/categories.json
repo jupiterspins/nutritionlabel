@@ -1,0 +1,78 @@
+{
+  "fruits": [
+    "Apple",
+    "Banana",
+    "Orange",
+    "Strawberries",
+    "Blueberries",
+    "Grapes",
+    "Watermelon",
+    "Pineapple",
+    "Mango",
+    "Peach",
+    "Pear",
+    "Kiwi"
+  ],
+  "vegetables": [
+    "Broccoli",
+    "Carrot",
+    "Spinach",
+    "Tomato",
+    "Cucumber",
+    "Bell Pepper",
+    "Lettuce",
+    "Onion",
+    "Potato",
+    "Sweet Potato",
+    "Corn",
+    "Green Beans"
+  ],
+  "proteins": [
+    "Chicken Breast (cooked)",
+    "Salmon",
+    "Egg",
+    "Greek Yogurt",
+    "Tofu",
+    "Ground Beef (90% lean)",
+    "Turkey Breast",
+    "Tuna",
+    "Black Beans",
+    "Lentils"
+  ],
+  "grains": [
+    "White Rice (cooked)",
+    "Brown Rice (cooked)",
+    "Quinoa (cooked)",
+    "Oatmeal",
+    "Whole Wheat Bread",
+    "Pasta (cooked)",
+    "White Bread"
+  ],
+  "dairy": [
+    "Milk (2%)",
+    "Cheddar Cheese",
+    "Mozzarella Cheese",
+    "Butter",
+    "Cottage Cheese",
+    "Sour Cream",
+    "Ice Cream (Vanilla)"
+  ],
+  "snacks": [
+    "Almonds",
+    "Peanut Butter",
+    "Popcorn",
+    "Chocolate Chip Cookies",
+    "Potato Chips",
+    "Pretzels",
+    "Granola Bar"
+  ],
+  "beverages": [
+    "Coffee (black)",
+    "Orange Juice",
+    "Apple Juice",
+    "Coca-Cola",
+    "Green Tea",
+    "Sports Drink",
+    "Beer (regular)"
+  ]
+}

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Label Finder | Opus Caviar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the nutrition label */
+        .nutrition-label {
+            border: 2px solid #000;
+            padding: 8px;
+            background-color: #fff;
+            color: #000;
+        }
+        .nutrition-label h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+        .nutrition-label .serving-info {
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+        .nutrition-label .line {
+            border-top: 1px solid #000;
+        }
+        .nutrition-label .thick-line {
+            border-top: 10px solid #000;
+        }
+        .nutrition-label .thin-line {
+            border-top: 5px solid #000;
+        }
+        .nutrition-label .amount-per-serving {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4px 0;
+        }
+        .nutrition-label .calories-info {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        .nutrition-label .daily-value {
+            text-align: right;
+            font-weight: 700;
+        }
+        .nutrition-label .nutrient {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .nutrition-label .nutrient .value {
+            font-weight: 400;
+        }
+        .nutrition-label .nutrient.indented {
+            padding-left: 20px;
+        }
+        .nutrition-label .footnote {
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        /* Autocomplete styles */
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+        /* Fade-in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-2xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Nutrition Label Finder</h1>
+            <p class="text-lg text-gray-600 mt-2">Powered by <a href="https://opuscaviar.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Opus Caviar</a></p>
+        </header>
+
+        <!-- Search Section -->
+        <main>
+            <div id="search-container" class="relative">
+                <form autocomplete="off">
+                    <input id="searchInput" type="text" placeholder="e.g., 'apple' or 'oreo cookies'" class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </form>
+                <div id="autocomplete-list" class="autocomplete-items rounded-b-lg shadow-lg"></div>
+            </div>
+
+            <!-- Common Searches Section -->
+            <section id="common-searches" class="mt-8">
+                <h2 class="text-xl font-semibold text-center text-gray-700 mb-4">Common Searches</h2>
+                <div id="common-links-container" class="flex flex-wrap justify-center gap-2">
+                    <!-- Links will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Nutrition Label Display Section -->
+            <div id="nutrition-label-container" class="mt-8"></div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-sm text-gray-500">
+            <p>&copy; 2025 Opus Caviar. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="hover:underline mx-2">About this Tool</a>
+                <a href="https://opuscaviar.com" target="_blank" rel="noopener noreferrer" class="hover:underline mx-2">Visit Opus Caviar</a>
+                <a href="#" class="hover:underline mx-2">Privacy Policy</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // --- DATABASE ---
+        // A simple database of food items. In a real application, this would come from an API.
+        const foodData = {
+            "Apple": { servingSizeG: 182, calories: 95, fat: 0.3, carbs: 25, sugar: 19, protein: 0.5, fiber: 4.4, sodium: 2, potassium: 195, vitC: 14, vitA: 2 },
+            "Banana": { servingSizeG: 118, calories: 105, fat: 0.4, carbs: 27, sugar: 14, protein: 1.3, fiber: 3.1, sodium: 1, potassium: 422, vitC: 17, vitB6: 20 },
+            "Chicken Breast (cooked)": { servingSizeG: 100, calories: 165, fat: 3.6, carbs: 0, sugar: 0, protein: 31, fiber: 0, sodium: 74, potassium: 256, iron: 6, vitB6: 30 },
+            "Avocado": { servingSizeG: 201, calories: 322, fat: 29, carbs: 17, sugar: 1.3, protein: 4, fiber: 14, sodium: 14, potassium: 975, vitC: 33, vitK: 53 },
+            "Oreo Cookies (3 cookies)": { servingSizeG: 34, calories: 160, fat: 7, carbs: 25, sugar: 14, protein: 1, fiber: 1, sodium: 190, iron: 8 },
+            "Fairlife Protein Shake (Chocolate)": { servingSizeG: 414, calories: 150, fat: 2.5, carbs: 8, sugar: 3, protein: 30, fiber: 1, sodium: 230, calcium: 50, vitD: 25 },
+            "Honey Nut Cheerios": { servingSizeG: 37, calories: 140, fat: 2, carbs: 29, sugar: 12, protein: 3, fiber: 3, sodium: 210, iron: 25, vitD: 10 },
+            "Fage 0% Greek Yogurt": { servingSizeG: 170, calories: 90, fat: 0, carbs: 6, sugar: 6, protein: 18, fiber: 0, sodium: 65, calcium: 20 },
+            "Premier Protein Shake (Vanilla)": { servingSizeG: 325, calories: 160, fat: 3, carbs: 5, sugar: 1, protein: 30, fiber: 1, sodium: 230, calcium: 50, iron: 25 },
+            "Twisted Tea": { servingSizeG: 355, calories: 220, fat: 0, carbs: 25.6, sugar: 23.9, protein: 0, sodium: 10 },
+            "Michelob Ultra": { servingSizeG: 355, calories: 95, fat: 0, carbs: 2.6, sugar: 0, protein: 0.6, sodium: 0 },
+            "AG1": { servingSizeG: 12, calories: 50, fat: 0, carbs: 6, sugar: 1, protein: 2, fiber: 2, sodium: 35, vitC: 467, vitE: 335, zinc: 136 },
+            "Clif Bar (Chocolate Chip)": { servingSizeG: 68, calories: 250, fat: 7, carbs: 45, sugar: 21, protein: 9, fiber: 4, sodium: 150, iron: 10 },
+            "Egg": { servingSizeG: 50, calories: 78, fat: 5, carbs: 0.6, sugar: 0.6, protein: 6, sodium: 62, iron: 5, vitD: 11 },
+            "Potato": { servingSizeG: 173, calories: 161, fat: 0.2, carbs: 37, sugar: 1.3, protein: 4.3, fiber: 3.8, sodium: 10, potassium: 897, vitC: 46 }
+        };
+
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteList = document.getElementById('autocomplete-list');
+        const labelContainer = document.getElementById('nutrition-label-container');
+        const commonLinksContainer = document.getElementById('common-links-container');
+
+        let currentFocus = -1;
+
+        // --- POPULATE COMMON SEARCHES ---
+        const commonSearches = ["Apple", "Chicken Breast (cooked)", "Oreo Cookies (3 cookies)", "Avocado", "Fairlife Protein Shake (Chocolate)", "Banana", "Egg", "Potato"];
+        
+        commonSearches.forEach(foodName => {
+            const link = document.createElement('a');
+            link.href = "#";
+            link.textContent = foodName;
+            link.dataset.food = foodName; // Store food name in data attribute
+            link.className = "px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition-colors";
+            commonLinksContainer.appendChild(link);
+        });
+
+        // --- EVENT LISTENER FOR COMMON SEARCHES (EVENT DELEGATION) ---
+        commonLinksContainer.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent page jump
+            if (e.target.tagName === 'A') {
+                const foodName = e.target.dataset.food;
+                searchInput.value = foodName;
+                displayNutritionLabel(foodName);
+                window.scrollTo({ top: labelContainer.offsetTop - 20, behavior: 'smooth' });
+            }
+        });
+        
+        // --- SEARCH & AUTOCOMPLETE LOGIC ---
+        searchInput.addEventListener('input', function(e) {
+            const val = this.value;
+            closeAllLists();
+            if (!val) { return false; }
+            currentFocus = -1;
+
+            const foodKeys = Object.keys(foodData);
+            foodKeys.forEach(food => {
+                if (food.substr(0, val.length).toUpperCase() == val.toUpperCase() || food.toUpperCase().includes(val.toUpperCase())) {
+                    const itemDiv = document.createElement("DIV");
+                    itemDiv.innerHTML = "<strong>" + food.substr(0, val.length) + "</strong>";
+                    itemDiv.innerHTML += food.substr(val.length);
+                    itemDiv.innerHTML += "<input type='hidden' value='" + food + "'>";
+                    
+                    itemDiv.addEventListener("click", function(e) {
+                        searchInput.value = this.getElementsByTagName("input")[0].value;
+                        displayNutritionLabel(searchInput.value);
+                        closeAllLists();
+                    });
+                    autocompleteList.appendChild(itemDiv);
+                }
+            });
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            let x = document.getElementById("autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) { // Arrow DOWN
+                currentFocus++;
+                addActive(x);
+            } else if (e.keyCode == 38) { // Arrow UP
+                currentFocus--;
+                addActive(x);
+            } else if (e.keyCode == 13) { // Enter
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    if (x) x[currentFocus].click();
+                } else if (x && x.length > 0) {
+                    // If nothing is focused, select the first item
+                    x[0].click();
+                }
+            }
+        });
+
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+
+        function removeActive(x) {
+            for (let i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+
+        function closeAllLists(elmnt) {
+            const items = document.getElementsByClassName("autocomplete-items");
+            for (let i = 0; i < items.length; i++) {
+                if (elmnt != items[i] && elmnt != searchInput) {
+                    items[i].innerHTML = "";
+                }
+            }
+        }
+
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+
+        // --- NUTRITION LABEL DISPLAY LOGIC ---
+        function displayNutritionLabel(foodName) {
+            const food = foodData[foodName];
+            if (!food) {
+                labelContainer.innerHTML = `<p class="text-center text-red-500">Sorry, nutrition data for "${foodName}" not found.</p>`;
+                return;
+            }
+
+            const originalServingSize = food.servingSizeG;
+
+            const renderLabel = (multiplier) => {
+                const m = (val) => val !== undefined ? (val * multiplier).toFixed(1).replace(/\.0$/, '') : '-';
+                const p = (val) => val !== undefined ? Math.round(val * multiplier) : '-';
+
+                const html = `
+                    <div class="nutrition-label fade-in max-w-sm mx-auto">
+                        <h1>Nutrition Facts</h1>
+                        <div class="line"></div>
+                        <div class="serving-info">
+                            Serving Size 
+                            <input id="servingSizeInput" type="number" value="${(originalServingSize * multiplier).toFixed(0)}" class="w-20 p-1 border border-gray-400 rounded text-right"> g
+                        </div>
+                        <div class="thick-line"></div>
+                        <div class="amount-per-serving">
+                            <b>Amount per serving</b>
+                        </div>
+                        <div class="amount-per-serving calories-info">
+                            <b>Calories</b>
+                            <b>${p(food.calories)}</b>
+                        </div>
+                        <div class="thin-line"></div>
+                        <div class="amount-per-serving">
+                            <b>% Daily Value*</b>
+                        </div>
+                        <div class="line"></div>
+                        <div class="nutrient">
+                            <span><b>Total Fat</b> ${m(food.fat)}g</span>
+                            <span class="daily-value">${p(food.fat / 65 * 100)}%</span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="nutrient">
+                            <span><b>Sodium</b> ${m(food.sodium)}mg</span>
+                            <span class="daily-value">${p(food.sodium / 2400 * 100)}%</span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="nutrient">
+                            <span><b>Total Carbohydrate</b> ${m(food.carbs)}g</span>
+                            <span class="daily-value">${p(food.carbs / 300 * 100)}%</span>
+                        </div>
+                        <div class="nutrient indented">
+                            <span>Dietary Fiber ${m(food.fiber)}g</span>
+                            <span class="daily-value">${p(food.fiber / 25 * 100)}%</span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="nutrient indented">
+                            <span>Total Sugars ${m(food.sugar)}g</span>
+                            <span></span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="nutrient">
+                            <span><b>Protein</b> ${m(food.protein)}g</span>
+                            <span class="daily-value">${p(food.protein / 50 * 100)}%</span>
+                        </div>
+                        <div class="thick-line"></div>
+                        ${food.vitD !== undefined ? `<div class="nutrient"><span>Vitamin D</span><span class="daily-value">${p(food.vitD)}%</span></div><div class="line"></div>` : ''}
+                        ${food.calcium !== undefined ? `<div class="nutrient"><span>Calcium</span><span class="daily-value">${p(food.calcium)}%</span></div><div class="line"></div>` : ''}
+                        ${food.iron !== undefined ? `<div class="nutrient"><span>Iron</span><span class="daily-value">${p(food.iron)}%</span></div><div class="line"></div>` : ''}
+                        ${food.potassium !== undefined ? `<div class="nutrient"><span>Potassium ${m(food.potassium)}mg</span><span class="daily-value">${p(food.potassium / 4700 * 100)}%</span></div><div class="line"></div>` : ''}
+                        ${food.vitA !== undefined ? `<div class="nutrient"><span>Vitamin A</span><span class="daily-value">${p(food.vitA)}%</span></div><div class="line"></div>` : ''}
+                        ${food.vitC !== undefined ? `<div class="nutrient"><span>Vitamin C</span><span class="daily-value">${p(food.vitC)}%</span></div><div class="line"></div>` : ''}
+                        ${food.vitB6 !== undefined ? `<div class="nutrient"><span>Vitamin B6</span><span class="daily-value">${p(food.vitB6)}%</span></div><div class="line"></div>` : ''}
+                        <div class="footnote">*The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.</div>
+                    </div>
+                `;
+                labelContainer.innerHTML = html;
+
+                // Add event listener to the new input
+                const servingSizeInput = document.getElementById('servingSizeInput');
+                servingSizeInput.addEventListener('input', (e) => {
+                    const newServingSize = parseFloat(e.target.value);
+                    if (!isNaN(newServingSize) && newServingSize > 0) {
+                        const newMultiplier = newServingSize / originalServingSize;
+                        renderLabel(newMultiplier);
+                        // Maintain focus after re-render
+                        document.getElementById('servingSizeInput').focus();
+                    }
+                });
+            };
+
+            renderLabel(1); // Initial render with multiplier of 1
+        }
+    </script>
+
+</body>
+</html>

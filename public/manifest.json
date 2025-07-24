@@ -1,0 +1,38 @@
+{
+  "name": "Nutrition Label Finder",
+  "short_name": "NutritionLabel",
+  "description": "Find nutrition facts and calorie information for thousands of foods",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "food", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Compare Foods",
+      "url": "/tools/compare",
+      "description": "Compare nutrition facts"
+    },
+    {
+      "name": "Label Maker",
+      "url": "/tools/label-maker",
+      "description": "Create custom labels"
+    }
+  ]
+}

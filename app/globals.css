@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the nutrition label */
+.nutrition-label {
+  border: 2px solid #000;
+  padding: 8px;
+  background-color: #fff;
+  color: #000;
+}
+.nutrition-label h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -1px;
+}
+.nutrition-label .serving-info {
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+}
+.nutrition-label .line {
+  border-top: 1px solid #000;
+}
+.nutrition-label .thick-line {
+  border-top: 10px solid #000;
+}
+.nutrition-label .thin-line {
+  border-top: 5px solid #000;
+}
+.nutrition-label .amount-per-serving {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0;
+}
+.nutrition-label .calories-info {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.nutrition-label .daily-value {
+  text-align: right;
+  font-weight: 700;
+}
+.nutrition-label .nutrient {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.nutrition-label .nutrient .value {
+  font-weight: 400;
+}
+.nutrition-label .nutrient.indented {
+  padding-left: 20px;
+}
+.nutrition-label .footnote {
+  font-size: 0.75rem;
+  margin-top: 8px;
+}
+
+/* Fade-in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
