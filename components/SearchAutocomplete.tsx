@@ -7,6 +7,7 @@ import { searchFoods, getFoodSlug, getFoodByName } from '@/lib/foods';
 interface SearchAutocompleteProps {
   initialValue?: string;
   onSelect?: (foodName: string) => void;
+  onQueryChange?: (query: string) => void;
   useFuzzySearch?: boolean;
   filterCategory?: string;
 }
@@ -14,6 +15,7 @@ interface SearchAutocompleteProps {
 export default function SearchAutocomplete({ 
   initialValue = '', 
   onSelect,
+  onQueryChange,
   useFuzzySearch = true,
   filterCategory
 }: SearchAutocompleteProps) {
@@ -30,6 +32,10 @@ export default function SearchAutocomplete({
   }, [initialValue]);
 
   useEffect(() => {
+    if (onQueryChange) {
+      onQueryChange(query);
+    }
+    
     if (query.length > 0) {
       let results = searchFoods(query, useFuzzySearch);
       
@@ -48,7 +54,7 @@ export default function SearchAutocomplete({
       setShowSuggestions(false);
     }
     setSelectedIndex(-1);
-  }, [query, useFuzzySearch, filterCategory]);
+  }, [query, useFuzzySearch, filterCategory, onQueryChange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -126,7 +132,7 @@ export default function SearchAutocomplete({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => query.length > 0 && setShowSuggestions(true)}
-          placeholder="e.g., 'apple' or 'oreo cookies'"
+          placeholder="Search any food, brand, or restaurant item..."
           className="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           autoComplete="off"
         />

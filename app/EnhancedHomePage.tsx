@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import SearchAutocomplete from '@/components/SearchAutocomplete';
 import NutritionLabel from '@/components/NutritionLabel';
 import CategoryFilter from '@/components/CategoryFilter';
+import SearchSuggestions from '@/components/SearchSuggestions';
 import { getFoodByName, getCommonSearches, getFoodsByCategory } from '@/lib/foods';
 import { FoodCategory } from '@/types/food';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ export default function EnhancedHomePage() {
   const [selectedCategory, setSelectedCategory] = useState<FoodCategory | 'all'>('all');
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   
   // Load recently viewed and favorites from localStorage
   useEffect(() => {
@@ -78,9 +80,6 @@ export default function EnhancedHomePage() {
             Opus Caviar
           </a>
         </p>
-        <p className="text-sm text-gray-500 mt-1">
-          Search from 70+ foods or connect to USDA database
-        </p>
       </header>
 
       {/* Search Section */}
@@ -89,9 +88,18 @@ export default function EnhancedHomePage() {
           <SearchAutocomplete
             initialValue={selectedFood || ''}
             onSelect={handleFoodSelect}
+            onQueryChange={setSearchQuery}
             useFuzzySearch={true}
             filterCategory={selectedCategory}
           />
+          
+          {/* Show suggestions for generic searches */}
+          {searchQuery && !selectedFood && (
+            <SearchSuggestions
+              query={searchQuery}
+              onSelect={handleFoodSelect}
+            />
+          )}
         </div>
 
         {/* Category Filter */}
