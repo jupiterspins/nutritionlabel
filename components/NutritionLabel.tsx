@@ -21,8 +21,10 @@ export default function NutritionLabel({ foodName, foodData, initialServingSize 
     val !== undefined ? Math.round(val * multiplier) : '-';
 
   return (
-    <div className="nutrition-label fade-in max-w-sm mx-auto">
-      <h1>Nutrition Facts</h1>
+    <div className="card-modern p-6 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">{foodName}</h2>
+      <div className="nutrition-label fade-in">
+        <h1>Nutrition Facts</h1>
       <div className="line"></div>
       <div className="serving-info">
         Serving Size{' '}
@@ -156,6 +158,7 @@ export default function NutritionLabel({ foodName, foodData, initialServingSize 
       
       <div className="footnote">
         *The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.
+      </div>
       </div>
     </div>
   );

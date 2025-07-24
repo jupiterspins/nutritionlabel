@@ -14,7 +14,11 @@ export const metadata: Metadata = {
   keywords: 'nutrition label, nutrition facts, calories, food nutrition, nutrition information',
   authors: [{ name: 'Opus Caviar' }],
   robots: 'index, follow',
-  manifest: '/manifest.json',
+  manifest: '/site.webmanifest',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     title: 'Nutrition Label Finder | Opus Caviar',
     description: 'Find nutrition facts and calorie information for thousands of foods.',

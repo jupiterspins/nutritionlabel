@@ -1,6 +1,7 @@
 'use client';
 
 import { getSearchSuggestions } from '@/lib/search-helpers';
+import InfoIcon from '@/components/icons/InfoIcon';
 
 interface SearchSuggestionsProps {
   query: string;
@@ -28,8 +29,9 @@ export default function SearchSuggestions({ query, onSelect }: SearchSuggestions
           </button>
         ))}
       </div>
-      <p className="text-xs text-blue-700 mt-3">
-        💡 Tip: For accurate nutrition info, search for specific brands or preparation methods
+      <p className="text-xs text-blue-700 mt-3 flex items-center gap-1">
+        <InfoIcon className="w-4 h-4" />
+        Tip: For accurate nutrition info, search for specific brands or preparation methods
       </p>
     </div>
   );
